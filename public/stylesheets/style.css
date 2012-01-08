@@ -1,0 +1,52 @@
+body {
+  font: 12px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background: black url('blackbkgrnd.jpg');
+}
+
+a {
+  color: #00B7FF;
+}
+
+#black {
+	max-height:200px;
+	height:200px;
+}
+
+#submit_contain {
+	border: 4px dashed grey;
+	max-height:200px;
+	height:200px;
+}
+
+#submit {
+	max-height:200px;
+	height:200px;
+	overflow:auto;
+}
+
+#cards {
+	max-height:200px;
+	height:200px;
+}
+
+.big_button {
+	float:left;
+	max-height:200px;
+	height:200px;
+	width:100px;
+}
+
+.card {
+	padding: 15px 0 30px 0;
+	margin: 2px;
+	-moz-border-radius: 15px;
+	border-radius: 15px;
+}
+
+.white {
+	background: white;
+}
+
+.black {
+	background: #231F20;
+}

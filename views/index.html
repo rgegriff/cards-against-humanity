@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> Cards </title>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="/javascripts/jquery.min.js"></script>
+		<link href="stylesheets/style.css" rel="stylesheet" type="text/css"	
+	</head>
+	<body>
+		<input type="button" name="drawBlackCard" value="Black Card" />
+		<input type="button" name="drawWhiteCard" value="White Card" />
+		<input type="button" name="hideCards" value="Hide Cards" />
+		<div id="black"> </div>
+		<div id="submit_contain">
+			<button class="big_button"> submit </button>
+			<div id="submit"> </div>
+		</div>
+		<div id="cards"> </div>
+	</body>
+	<script>
+		$(document).ready(function() {
+			function draw_white (data) {
+				$('#cards').prepend("<img id=\"white_" + data + "\" class=\"white card\" src=\"images/cards/white_card-" + data + ".jpg\" />");
+				$('#white_' + data).click(function () { 
+					pick_white(data);
+				});
+			}
+
+			function pick_white  (data) {
+				$('#submit').append("<img id=\"submit_" + data + "\" class=\"white card\" src=\"images/cards/white_card-" + data + ".jpg\" />")
+				$('#white_' + data).remove();
+				$('#submit_' + data).click( function () {
+					draw_white(data);
+					$('#submit_' + data).remove();
+				});
+			}
+
+			// loading websockets
+			//var socket = io.connect('http://192.168.1.7'); /* use when connecting remotely */
+			var socket = io.connect('localhost');            /* use for local portablility */
+			socket.on('news', function (data) {
+				console.log(data);
+				socket.emit('my other event', { my: 'data' });
+				for (i = 0; i < 7; i++) {
+					socket.emit('draw white card');
+				}
+			});
+
+			// event handlers
+
+			/* socket events */
+			socket.on('send black card', function (data) {
+				$('#black').prepend("<img id=\"black_" + data + "\" class=\"black card\" src=\"images/cards/black_card-" + data + ".jpg\" />");
+			});
+
+			socket.on('send white card', function (data) {
+				draw_white(data);
+			});
+
+			/* javascript events */
+			$('input[name=drawBlackCard]').click(function(){
+				socket.emit('draw black card');
+			});
+
+			$('input[name=drawWhiteCard]').click(function(){
+				socket.emit('draw white card');
+			});
+
+			$('input[name=hideCards]').click(function(){
+				$('#cards').slideToggle(200);
+			});
+
+		});
+	</script>
+</html>
