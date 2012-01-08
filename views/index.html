@@ -10,24 +10,30 @@
 		<input type="button" name="drawBlackCard" value="Black Card" />
 		<input type="button" name="drawWhiteCard" value="White Card" />
 		<input type="button" name="hideCards" value="Hide Cards" />
-		<div id="black"> </div>
-		<div id="submit_contain">
-			<button class="big_button"> submit </button>
-			<div id="submit"> </div>
+		<div id='name_input'>
+			<input type='button' name='setName' value='Submit'>
+			<input type='text' name='nameText' placeholder='anon'>
 		</div>
-		<div id="cards"> </div>
+		<div id='table' style='display:none;'>
+			<div id="black"> </div>
+			<div id="submit_contain">
+				<button id="submit_button" class="big_button"> submit </button>
+				<div id="submit"> </div>
+			</div>
+			<div id="cards"> </div>
+		</div>
 	</body>
 	<script>
 		$(document).ready(function() {
 			function draw_white (data) {
-				$('#cards').prepend("<img id=\"white_" + data + "\" class=\"white card\" src=\"images/cards/white_card-" + data + ".jpg\" />");
+				$('#cards').prepend("<img num=\"" + data + "\" id=\"white_" + data + "\" class=\"white hand card\" src=\"images/cards/white_card-" + data + ".jpg\" />");
 				$('#white_' + data).click(function () { 
 					pick_white(data);
 				});
 			}
 
 			function pick_white  (data) {
-				$('#submit').append("<img id=\"submit_" + data + "\" class=\"white card\" src=\"images/cards/white_card-" + data + ".jpg\" />")
+				$('#submit').append("<img num=\"" + data + "\" id=\"submit_" + data + "\" class=\"white submit card\" src=\"images/cards/white_card-" + data + ".jpg\" />")
 				$('#white_' + data).remove();
 				$('#submit_' + data).click( function () {
 					draw_white(data);
@@ -36,19 +42,20 @@
 			}
 
 			// loading websockets
-			//var socket = io.connect('http://192.168.1.7'); /* use when connecting remotely */
-			var socket = io.connect('localhost');            /* use for local portablility */
-			socket.on('news', function (data) {
-				console.log(data);
-				socket.emit('my other event', { my: 'data' });
+			var socket = io.connect('http://192.168.1.12'); /* use when connecting remotely */
+			//var socket = io.connect('localhost');            /* use for local portablility */
+
+			// event handlers
+
+			/* socket events */
+			socket.on('start', function () {
+				$('#table').show();
+				$('#name_input').remove();
 				for (i = 0; i < 7; i++) {
 					socket.emit('draw white card');
 				}
 			});
 
-			// event handlers
-
-			/* socket events */
 			socket.on('send black card', function (data) {
 				$('#black').prepend("<img id=\"black_" + data + "\" class=\"black card\" src=\"images/cards/black_card-" + data + ".jpg\" />");
 			});
@@ -58,6 +65,21 @@
 			});
 
 			/* javascript events */
+			$('#submit_button').click( function() {
+				cards = new Array();
+				$('.submit').each( function(index) {
+					cards.push($(this).attr('num'));
+					console.log($(this).attr('num'));
+				});
+				socket.emit('submit white cards', {cards: cards});
+			});
+
+			$('input[name=setName]').click( function () {
+				name = $('input[name=nameText]').val()
+				if (name == '') name = 'anon'
+				console.log(name);
+				socket.emit('set name', name);
+			});
 			$('input[name=drawBlackCard]').click(function(){
 				socket.emit('draw black card');
 			});
@@ -65,11 +87,6 @@
 			$('input[name=drawWhiteCard]').click(function(){
 				socket.emit('draw white card');
 			});
-
-			$('input[name=hideCards]').click(function(){
-				$('#cards').slideToggle(200);
-			});
-
 		});
 	</script>
 </html>
