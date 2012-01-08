@@ -1,1 +1,6 @@
 Current server is node.js and express, but i want to change it so that ruby on rails handles the web serving.
+TODO:
+	add installation instructions
+	work on interface
+	finish netcode
+	look into scalability
