@@ -1,3 +1,6 @@
+var clients = new Object();
+var card_czar = null;
+
 // set up cards
 var white_cards = new Array();
 var black_cards = new Array();
@@ -9,7 +12,7 @@ var clients = new Array();
 function drawWhiteCard() {
 	if (white_cards.length == 0) {
 		for (i = 0; i < 460; i++) { // reshuffle the deck. THIS IS DUMB, 
-			//cards could still exist in hands
+									//cards could still exist in hands
 			white_cards[i] = i;
 		}
 	}
@@ -20,12 +23,31 @@ function drawWhiteCard() {
 function drawBlackCard() {
 	if (black_cards.lengh == 0) {
 		for (i = 0; i < 90; i++) { // reshuffle the deck. THIS IS DUMB, 
-			//cards could still exist in hands
+									//cards could still exist in hands
 			black_cards[i] = i;
 		}
 	}
 	i = Math.round(Math.random() * (black_cards.length - 1));
 	return black_cards.splice(i, 1);
+}
+
+function nextCzar() {
+	console.log('PICKING NEW CZAR');
+	ord = new Array();
+	for (i in clients) {
+		if (i == card_czar)
+			pos = ord.length;
+		if (clients[i]['name'] != null) // client has joined the game
+			ord.push(i);
+	}
+	console.log(ord.length);
+	console.log(ord);
+	console.log(ord[0]);
+	console.log(pos);
+	console.log(ord[pos]);
+	if (ord.length = 0) {
+		return null;
+	}
 }
 
 /**
@@ -69,7 +91,6 @@ console.log("WARNING: check connection ip in public/javascript/cards.js");
 console.log("for local work use localhost, if connecting remotely make sure ip is correct");
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 
-clients = new Object();
 io.sockets.on('connection', function (socket) {
 	clients[socket.id] = {'socket': socket};
 
@@ -90,6 +111,10 @@ io.sockets.on('connection', function (socket) {
 			clients[socket.id]['name'] = data;
 			user_names.push({'name': data, 'id': socket.id});
 			socket.emit('start');
+			if (!card_czar) {
+				socket.emit('set czar', socket.id);
+				card_czar = socket.id;
+			}
 			io.sockets.emit('user names', user_names);
 		}
 		else {
@@ -111,6 +136,8 @@ io.sockets.on('connection', function (socket) {
 	
 	socket.on('disconnect', function (data) {
 		console.log('disconnect');
+		if (socket.id == card_czar)
+			io.sockets.emit('set czar', nextCzar());
 		delete clients[socket.id];
 	});
 

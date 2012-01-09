@@ -51,6 +51,14 @@ $(document).ready(function() {
 		alert('User name ' + data + ' is already in use.');
 	});
 
+	socket.on('set czar', function (data) {
+		console.log(data);
+		console.log(socket.socket.sessionid);
+		if (data == socket.socket.sessionid) {
+			alert('you are the card czar');
+		}
+	});
+
 	/* javascript events */
 	$('#submit_button').click( function() {
 		cards = new Array();
