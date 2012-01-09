@@ -1,6 +1,29 @@
-Current server is node.js and express, but i want to change it so that ruby on rails handles the web serving.
+installation:
+	install node.js
+	then:
+	$ npm install express
+	$ npm install socket.io
+
+running:
+	$ node app.js
+
+	if connecting remotely make sure the ip 
+	in public/javascript/cards.js matches the ip 
+	of the machine running the server
+
+
+
+Current server is node.js and express, but i want 
+to change it so that ruby on rails handles the web 
+serving.
+
 TODO:
 	add installation instructions
 	work on interface
 	finish netcode
+		sending cards
+		picking card czar
+		scoring
+		chat
 	look into scalability
+	security
