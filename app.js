@@ -65,7 +65,8 @@ app.get('/', function (req, res) {
 });
 
 app.listen(8060);
-console.log("WARNING: check connection ip in index.html");
+console.log("WARNING: check connection ip in public/javascript/cards.js");
+console.log("for local work use localhost, if connecting remotely make sure ip is correct");
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 
 clients = new Object();
@@ -77,7 +78,8 @@ io.sockets.on('connection', function (socket) {
 		socket.emit('start');
 		user_names = new Array();
 		for (i in clients) {
-			user_names.push(clients[i]['name']);
+			user_names.push({'name': clients[i]['name'],
+							 'id': i});
 		}
 		io.sockets.emit('user names', user_names);
 	});

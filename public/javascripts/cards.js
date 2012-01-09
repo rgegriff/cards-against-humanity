@@ -1,6 +1,3 @@
-// loading websockets
-var socket = io.connect('http://192.168.1.12'); /* use when connecting remotely */
-//var socket = io.connect('localhost');            /* use for local portablility */
 $(document).ready(function() {
 	function draw_white (data) {
 		$('#cards').prepend("<img num=\"" + data + "\" id=\"white_" + data + "\" class=\"white hand card\" src=\"images/cards/white_card-" + data + ".jpg\" />");
@@ -19,8 +16,8 @@ $(document).ready(function() {
 	}
 
 	// loading websockets
-	var socket = io.connect('http://192.168.1.12'); /* use when connecting remotely */
-	//var socket = io.connect('localhost');            /* use for local portablility */
+	//var socket = io.connect('http://192.168.1.12'); /* use when connecting remotely */
+	var socket = io.connect('localhost');            /* use for local portablility */
 
 	// event handlers
 
@@ -28,6 +25,7 @@ $(document).ready(function() {
 	socket.on('start', function () {
 		$('#table').show();
 		$('#name_input').remove();
+		console.log(socket);
 		for (i = 0; i < 7; i++) {
 			socket.emit('draw white card');
 		}
@@ -45,7 +43,7 @@ $(document).ready(function() {
 		$('#users').html('');
 		for ( i in data) {
 			console.log(data[i]);
-			$('#users').append(data[i] + '<br>');
+			$('#users').append(data[i]['name'] + '<br>');
 		}
 	});
 
