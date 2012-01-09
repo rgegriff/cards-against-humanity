@@ -7,9 +7,26 @@ a {
   color: #00B7FF;
 }
 
-#black {
-	max-height:200px;
+#top {
 	height:200px;
+}
+
+#black {
+	float:left;
+}
+
+#chat {
+	height:180px;
+	max-height:180px;
+}
+
+#users {
+	float:right;
+	height:90%;
+	max-width:100px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	color: white;
 }
 
 #submit_contain {

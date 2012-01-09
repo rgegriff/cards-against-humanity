@@ -9,7 +9,7 @@ var clients = new Array();
 function drawWhiteCard() {
 	if (white_cards.length == 0) {
 		for (i = 0; i < 460; i++) { // reshuffle the deck. THIS IS DUMB, 
-									//cards could still exist in hands
+			//cards could still exist in hands
 			white_cards[i] = i;
 		}
 	}
@@ -20,7 +20,7 @@ function drawWhiteCard() {
 function drawBlackCard() {
 	if (black_cards.lengh == 0) {
 		for (i = 0; i < 90; i++) { // reshuffle the deck. THIS IS DUMB, 
-									//cards could still exist in hands
+			//cards could still exist in hands
 			black_cards[i] = i;
 		}
 	}
@@ -33,35 +33,35 @@ function drawBlackCard() {
  */
 
 var express = require('express')
-  , routes = require('./routes')
+, routes = require('./routes')
 
 var app = module.exports = express.createServer()
-  , io = require('socket.io').listen(app);
+	, io = require('socket.io').listen(app);
 
-// Configuration
+	// Configuration
 
-app.configure(function(){
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
-});
+	app.configure(function(){
+		app.set('views', __dirname + '/views');
+		app.set('view engine', 'jade');
+		app.use(express.bodyParser());
+		app.use(express.methodOverride());
+		app.use(app.router);
+		app.use(express.static(__dirname + '/public'));
+	});
 
 app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
+	app.use(express.errorHandler({ dumpExceptions: true, showStack: true })); 
 });
 
 app.configure('production', function(){
-  app.use(express.errorHandler()); 
+	app.use(express.errorHandler()); 
 });
 
 // Routes
 
 //app.get('/', routes.index);
 app.get('/', function (req, res) {
-  res.sendfile(__dirname + '/views/index.html');
+	res.sendfile(__dirname + '/views/index.html');
 });
 
 app.listen(8060);
@@ -70,24 +70,29 @@ console.log("Express server listening on port %d in %s mode", app.address().port
 
 clients = new Object();
 io.sockets.on('connection', function (socket) {
-  clients[socket.id] = {'socket': socket};
-  socket.on('set name', function (data) {
-	clients[socket.id]['name'] = data;
-	console.log(clients);
-    socket.emit('start');
-  });
-  socket.on('draw white card', function () {
-	socket.emit('send white card', drawWhiteCard());
-  });
-  socket.on('draw black card', function () {
-	io.sockets.emit('send black card', drawBlackCard());
-  });
-  socket.on('submit white cards', function (data) {
-	console.log(data);
-  });
-  socket.on('disconnect', function (data) {
-    console.log('disconnect');
-    delete clients[socket.id];
-  });
-  
+	clients[socket.id] = {'socket': socket};
+	socket.on('set name', function (data) {
+		clients[socket.id]['name'] = data;
+		console.log(clients);
+		socket.emit('start');
+		user_names = new Array();
+		for (i in clients) {
+			user_names.push(clients[i]['name']);
+		}
+		io.sockets.emit('user names', user_names);
+	});
+	socket.on('draw white card', function () {
+		socket.emit('send white card', drawWhiteCard());
+	});
+	socket.on('draw black card', function () {
+		io.sockets.emit('send black card', drawBlackCard());
+	});
+	socket.on('submit white cards', function (data) {
+		console.log(data);
+	});
+	socket.on('disconnect', function (data) {
+		console.log('disconnect');
+		delete clients[socket.id];
+	});
+
 });
