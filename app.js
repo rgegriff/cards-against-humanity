@@ -72,26 +72,43 @@ console.log("Express server listening on port %d in %s mode", app.address().port
 clients = new Object();
 io.sockets.on('connection', function (socket) {
 	clients[socket.id] = {'socket': socket};
+
+	/* listners */
 	socket.on('set name', function (data) {
-		clients[socket.id]['name'] = data;
-		console.log(clients);
-		socket.emit('start');
+		unique = true;
 		user_names = new Array();
-		for (i in clients) {
-			user_names.push({'name': clients[i]['name'],
-							 'id': i});
+		for (i in clients) { // make sure user name is unique
+			if (data == clients[i]['name']) {
+				unique = false;
+				break;
+			}
+			else if (clients[i]['name'] != null) { // do not add clients without a name
+				user_names.push({'name': clients[i]['name'], 'id': i});
+			}
 		}
-		io.sockets.emit('user names', user_names);
+		if (unique) {
+			clients[socket.id]['name'] = data;
+			user_names.push({'name': data, 'id': socket.id});
+			socket.emit('start');
+			io.sockets.emit('user names', user_names);
+		}
+		else {
+			socket.emit('non unique name', data);
+		}
 	});
+
 	socket.on('draw white card', function () {
 		socket.emit('send white card', drawWhiteCard());
 	});
+
 	socket.on('draw black card', function () {
 		io.sockets.emit('send black card', drawBlackCard());
 	});
+
 	socket.on('submit white cards', function (data) {
 		console.log(data);
 	});
+	
 	socket.on('disconnect', function (data) {
 		console.log('disconnect');
 		delete clients[socket.id];

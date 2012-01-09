@@ -47,6 +47,10 @@ $(document).ready(function() {
 		}
 	});
 
+	socket.on('non unique name', function (data) {
+		alert('User name ' + data + ' is already in use.');
+	});
+
 	/* javascript events */
 	$('#submit_button').click( function() {
 		cards = new Array();
