@@ -37,15 +37,25 @@ function nextCzar() {
 	for (i in clients) {
 		if (i == card_czar)
 			pos = ord.length;
-		if (clients[i]['name'] != null) // client has joined the game
+		if (clients[i]['name'] != null) // only add clients with name (clients that have joined)
 			ord.push(i);
 	}
-	console.log(ord.length);
-	console.log(ord);
-	console.log(ord[0]);
-	console.log(pos);
-	console.log(ord[pos]);
-	if (ord.length = 0) {
+
+	if (ord.length != 0) {
+		console.log('len: ' + ord.length);
+		console.log(ord);
+		console.log('0: ' + ord[0]);
+		console.log('czar pos: ' + pos);
+		console.log('czar id: ' + ord[pos]);
+		pos++;
+		if (pos == ord.length) {
+			pos = 0;
+			console.log('wrap');
+		}
+		console.log('next czar: ' + ord[pos]);
+		return ord[pos];
+	}
+	else {
 		return null;
 	}
 }
@@ -136,8 +146,13 @@ io.sockets.on('connection', function (socket) {
 	
 	socket.on('disconnect', function (data) {
 		console.log('disconnect');
-		if (socket.id == card_czar)
-			io.sockets.emit('set czar', nextCzar());
+		if (socket.id == card_czar) { // if socket is czar get a new czar
+			card_czar = nextCzar();
+			if (card_czar == socket.id) { // and make sure it's not the disconnecting user
+				card_czar = null;
+			}
+			io.sockets.emit('set czar', card_czar);
+		}
 		delete clients[socket.id];
 	});
 
