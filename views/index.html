@@ -8,9 +8,9 @@
 		<link href="stylesheets/style.css" rel="stylesheet" type="text/css"	
 	</head>
 	<body>
-		<input type="button" name="drawBlackCard" value="Black Card" />
-		<input type="button" name="drawWhiteCard" value="White Card" />
-		<input type="button" name="hideCards" value="Hide Cards" />
+		<input type="button" name="drawBlackCard" style='display:none;' value="Black Card" />
+		<input type="button" name="drawWhiteCard" style='display:none;' value="White Card" />
+		<input type="button" name="nextCzar"      style='display:none;' value="Next Czar" />
 		<div id='name_input'>
 			<input type='button' name='setName' value='Submit'>
 			<input type='text' name='nameText' placeholder='anon'>
@@ -20,6 +20,7 @@
 				<div id="black"> </div>
 				<div id="users"> </div>
 			</div>
+			<div id="judge"> </div>
 			<div id="submit_contain">
 				<button id="submit_button" class="big_button"> submit </button>
 				<div id="submit"> </div>

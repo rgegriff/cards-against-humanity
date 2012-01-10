@@ -53,6 +53,10 @@ a {
 	width:100px;
 }
 
+.user[czar=yes] {
+	color: red;
+}
+
 .card {
 	padding: 15px 0 30px 0;
 	margin: 2px;

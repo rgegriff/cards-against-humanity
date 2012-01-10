@@ -1,5 +1,6 @@
 var clients = new Object();
 var card_czar = null;
+var cur_black_card = null;
 
 // set up cards
 var white_cards = new Array();
@@ -120,11 +121,10 @@ io.sockets.on('connection', function (socket) {
 		if (unique) {
 			clients[socket.id]['name'] = data;
 			user_names.push({'name': data, 'id': socket.id});
-			socket.emit('start');
-			if (!card_czar) {
-				socket.emit('set czar', socket.id);
+			if (!card_czar)
 				card_czar = socket.id;
-			}
+			socket.emit('start', cur_black_card);
+			io.sockets.emit('set czar', card_czar);
 			io.sockets.emit('user names', user_names);
 		}
 		else {
@@ -137,11 +137,17 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on('draw black card', function () {
-		io.sockets.emit('send black card', drawBlackCard());
+		cur_black_card = drawBlackCard();
+		io.sockets.emit('send black card', cur_black_card);
 	});
 
 	socket.on('submit white cards', function (data) {
-		console.log(data);
+		clients[card_czar]['socket'].emit('give czar cards', {'id': socket.id, 'name': clients[socket.id]['name'], 'cards':data});
+	});
+
+	socket.on('next czar', function () {
+		card_czar = nextCzar();
+		io.sockets.emit('set czar', card_czar);
 	});
 	
 	socket.on('disconnect', function (data) {
