@@ -17,10 +17,9 @@ $(document).ready(function() {
 	}
 
 	// loading websockets
-  /* local network - change to reflect localhost ip*/
-	//var socket = io.connect('http://192.168.1.11'); 
-  /* heroku */
-	var socket = io.connect('http://blooming-samurai-6301.herokuapp.com/');
+  /* local network */ //var socket = io.connect('http://192.168.1.11'); 
+  /* heroku */        //var socket = io.connect('http://blooming-samurai-6301.herokuapp.com/');
+  /* localhost */     var socket = io.connect('localhost')
   
 	//var socket = io.connect('localhost');
 

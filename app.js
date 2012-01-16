@@ -161,6 +161,13 @@ io.sockets.on('connection', function (socket) {
 			io.sockets.emit('set czar', card_czar);
 		}
 		delete clients[socket.id];
+    user_names = new Array();
+    for (i in clients) { // make sure user name is unique
+      if (clients[i]['name'] != null) { // do not add clients without a name
+        user_names.push({'name': clients[i]['name'], 'id': i});
+      }
+    }
+    io.sockets.emit('user names', user_names);
 	});
 
 });
