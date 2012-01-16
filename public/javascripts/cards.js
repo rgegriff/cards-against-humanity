@@ -17,8 +17,8 @@ $(document).ready(function() {
 	}
 
 	// loading websockets
-	//var socket = io.connect('http://192.168.1.12'); /* use when connecting remotely */
-	var socket = io.connect('localhost');            /* use for local portablility */
+	var socket = io.connect('http://192.168.1.11'); /* use when connecting remotely */
+	//var socket = io.connect('localhost');            /* use for local portablility */
 
 	// event handlers
 
@@ -101,6 +101,9 @@ $(document).ready(function() {
 			cards.push($(this).attr('num'));
 		});
 		socket.emit('submit white cards', {cards: cards});
+    $('.submit').each(function(index) {
+      $(this).remove();
+    });
 	});
 
 	$('input[name=setName]').click( function () {
