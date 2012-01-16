@@ -97,7 +97,8 @@ app.get('/', function (req, res) {
 	res.sendfile(__dirname + '/views/index.html');
 });
 
-app.listen(8060);
+var port = process.env.PORT || 8060;
+app.listen(port);
 console.log("WARNING: check connection ip in public/javascript/cards.js");
 console.log("for local work use localhost, if connecting remotely make sure ip is correct");
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
