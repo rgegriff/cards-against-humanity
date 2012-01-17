@@ -1,4 +1,10 @@
 var card_czar = null;
+
+function pickWinner(id) {
+  console.log(id);
+ $('.name').show();
+}
+
 $(document).ready(function() {
 	function draw_white (data) {
 		$('#cards').prepend("<img num=\"" + data + "\" id=\"white_" + data + "\" class=\"white hand card\" src=\"images/cards/white_card-" + data + ".jpg\" />");
@@ -41,6 +47,7 @@ $(document).ready(function() {
 	socket.on('send black card', function (data) {
 		$('#judge').html('');
 		$('#black').html("<img id=\"black_" + data + "\" class=\"black card\" src=\"images/cards/black_card-" + data + ".jpg\" />");
+    $('#submit_button').show();
 	});
 
 	socket.on('send white card', function (data) {
@@ -48,8 +55,8 @@ $(document).ready(function() {
 	});
 
 	socket.on('give czar cards', function (data) {
-		console.log(data['cards']['cards']);
-		div = '<div>';
+		div = '<div class=\'submitted_cards\' id=\'name_' + data['id'] + '\' >';
+    div += '<div class=\'name\'> TEST </div>';
 		for (card in data['cards']['cards']) {
 			console.log(card);
 			c = data['cards']['cards'][card];
@@ -57,6 +64,10 @@ $(document).ready(function() {
 		}
 		div += '</div>';
 		$('#judge').append(div);
+    console.log($('#name_' + data['id']));
+    $('#name_' + data['id']).click(function () {
+      pickWinner(data['id']);
+    });
 	});
 
 	socket.on('user names', function (data) {
@@ -101,6 +112,7 @@ $(document).ready(function() {
 
 	/* javascript events */
 	$('#submit_button').click( function() {
+    $('#submit_button').hide();
 		cards = new Array();
 		$('.submit').each( function(index) {
 			cards.push($(this).attr('num'));

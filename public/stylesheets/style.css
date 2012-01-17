@@ -46,11 +46,31 @@ a {
 	height:200px;
 }
 
+.submitted_cards{
+  margin: 4px 4px;
+}
+
+.submitted_cards:hover {
+  margin: 0 0;
+	border: 4px dashed grey;
+}
+
 .big_button {
 	float:left;
 	max-height:200px;
 	height:200px;
 	width:100px;
+}
+
+.name {
+  display: none;
+  padding: 87px 0;
+	-moz-border-radius: 15px;
+	border-radius: 15px;
+  background: grey;
+  width: 100px;
+  text-align: center;
+  float:left;
 }
 
 .user[czar=yes] {
