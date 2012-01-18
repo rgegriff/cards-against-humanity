@@ -77,7 +77,9 @@ console.log "Express server listening on port %d in %s mode", app.address().port
 
 io.sockets.on 'connection', (socket) ->
   console.log('Anonymous client ' + socket.id + ' connected.')
-  clients[socket.id] = {'socket': socket}
+  clients[socket.id] = 
+    socket: socket
+    score: 0
 
   ## set name
   socket.on 'set name', (data) ->
@@ -89,10 +91,15 @@ io.sockets.on 'connection', (socket) ->
         break
       else if clients[i]['name']
         console.log clients[i]['name']
-        user_names.push {'name': clients[i]['name'], 'id': i}
+        user_names.push 
+          name: clients[i]['name']
+          id: i
     if unique
       clients[socket.id]['name'] = data
-      user_names.push {'name': data, 'id': socket.id}
+      user_names.push 
+        name: data
+        id: socket.id
+        score: clients[socket.id]['score']
       card_czar or= socket.id
       socket.emit 'start', cur_black_card
       io.sockets.emit 'set czar', card_czar
