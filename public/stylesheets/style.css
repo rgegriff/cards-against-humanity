@@ -15,15 +15,38 @@ a {
 	float:left;
 }
 
+
 #chat {
+  float: right;
+  width:500px;
+  max-width:500px;
+	height: 180px;
+	max-height: 180px;
+}
+
+#send {
+  position: relative;
+  top: -180px;
+  left: 100px;
+}
+
+#messages {
+  position: relative;
+  top: 0px;
+  left: 100px;
+	border: 4px dashed grey;
+  width: 390px;
+  max-width: 390px;
 	height:180px;
-	max-height:180px;
 }
 
 #users {
-	float:right;
-	height:90%;
-	max-width:100px;
+  position: relative;
+  left: 0px;
+  top: -184px;
+	height: 180px;
+	max-width: 100px;
+	width: 100px;
 	overflow-x: hidden;
 	overflow-y: auto;
 	color: white;
