@@ -1,1 +1,1 @@
-web: coffee app.js.coffee
+web: ./init
