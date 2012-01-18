@@ -8,8 +8,6 @@ var black_cards = new Array();
 for (i = 0; i < 460; i++) { white_cards[i] = i; }
 for (i = 0; i < 90; i++) { black_cards[i] = i; }
 
-var clients = new Array();
-
 function drawWhiteCard() {
 	if (white_cards.length == 0) {
 		for (i = 0; i < 460; i++) { // reshuffle the deck. THIS IS DUMB, 
@@ -99,8 +97,6 @@ app.get('/', function (req, res) {
 
 var port = process.env.PORT || 8060;
 app.listen(port);
-console.log("WARNING: check connection ip in public/javascript/cards.js");
-console.log("for local work use localhost, if connecting remotely make sure ip is correct");
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 
 io.sockets.on('connection', function (socket) {
