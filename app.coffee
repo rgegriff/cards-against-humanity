@@ -13,7 +13,7 @@ shuffleBlackDeck = () ->
 drawWhiteCard = () ->
   shuffleWhiteDeck() if white_cards.length == 0
   i = Math.round(Math.random() * (white_cards.length - 1))
-  return white_cards.splice(i, 1)
+  return white_cards.splice(i, 1)[0]
 
 drawBlackCard = () ->
   shuffleBlackDeck() if black_cards.length == 0
@@ -78,6 +78,8 @@ console.log "Express server listening on port %d in %s mode", app.address().port
 io.sockets.on 'connection', (socket) ->
   console.log('Anonymous client ' + socket.id + ' connected.')
   clients[socket.id] = {'socket': socket}
+
+  ## set name
   socket.on 'set name', (data) ->
     unique = true
     user_names = new Array()
@@ -99,8 +101,13 @@ io.sockets.on 'connection', (socket) ->
     else
       socket.emit 'non unique name', data
 
-  socket.on 'draw white card', () ->
-    socket.emit 'send white card', drawWhiteCard()
+  ## draw white cards
+  socket.on 'draw white cards', (data = 1) ->
+    console.log data
+    cards = new Array
+    for i in [1..data]
+      cards.push drawWhiteCard()
+    socket.emit 'send white cards', cards
 
   socket.on 'draw black card', () ->
     cur_black_card = drawBlackCard()

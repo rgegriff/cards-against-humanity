@@ -2,10 +2,7 @@
 echo Compiling coffescripts
 for i in ./public/javascripts/*.coffee
 do
-  if [ $1 ]
-  then
-    echo -e "\t$i"
-    coffee -c $i
-  fi
+  echo -e "\t$i"
+  coffee -c $i
 done
 coffee app.coffee
