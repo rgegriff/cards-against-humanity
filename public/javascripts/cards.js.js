@@ -1,5 +1,5 @@
 (function() {
-  var card_czar, draw_black, draw_white, name, pick_white, pick_winner;
+  var card_czar, draw_black, draw_white, name, pick_white, pick_winner, receve_message;
 
   card_czar = null;
 
@@ -41,6 +41,16 @@
       }
     }).appendTo('#submit');
     return $('#white_' + id).remove();
+  };
+
+  receve_message = function(sender, message) {
+    $('<p/>', {
+      html: message,
+      user: sender,
+      "class": 'message'
+    }).appendTo('#messages');
+    $('#messages').scrollTop($('#messages').get(0).scrollHeight);
+    return console.log($('#messages').scrollTop());
   };
 
   $(document).ready(function() {
@@ -140,11 +150,8 @@
       }
     });
     socket.on('receve message', function(data) {
-      return $('<p/>', {
-        html: data.message,
-        user: data.id,
-        "class": 'message'
-      }).appendTo('#messages');
+      receve_message(data.id, data.message);
+      return console.log($('#messages').scrollTop());
     });
     $('#submit_button').click(function() {
       var cards;
@@ -184,11 +191,7 @@
       var message;
       if ($('#chat_message').val() !== '') {
         message = '<strong> ' + name + ':</strong> ' + $('#chat_message').val();
-        $('<p/>', {
-          html: message,
-          user: 'you',
-          "class": 'message'
-        }).appendTo('#messages');
+        receve_message('you', message);
         socket.emit('send message', message);
         return $('#chat_message').val('');
       }

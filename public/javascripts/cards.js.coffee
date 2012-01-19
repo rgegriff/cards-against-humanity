@@ -31,6 +31,15 @@ pick_white = (id) ->
   ).appendTo('#submit')
   $('#white_' + id).remove()
 
+receve_message = (sender, message) ->
+  $('<p/>',
+    html: message
+    user: sender
+    class: 'message'
+  ).appendTo('#messages')
+  $('#messages').scrollTop($('#messages').get(0).scrollHeight)
+  console.log $('#messages').scrollTop()
+
 $(document).ready () ->
   socket = io.connect(document.url)
 
@@ -125,11 +134,8 @@ $(document).ready () ->
 
   ## recive message
   socket.on 'receve message', (data) ->
-    $('<p/>',
-      html: data.message
-      user: data.id
-      class: 'message'
-    ).appendTo('#messages')
+    receve_message data.id, data.message
+    console.log $('#messages').scrollTop()
 
 
   ## Javascript events ##
@@ -171,11 +177,7 @@ $(document).ready () ->
   $('#send_chat').click () ->
     if $('#chat_message').val() != ''
       message = '<strong> ' + name + ':</strong> ' + $('#chat_message').val() 
-      $('<p/>',
-        html: message
-        user: 'you'
-        class: 'message'
-      ).appendTo('#messages')
+      receve_message 'you', message
       socket.emit 'send message', message
       $('#chat_message').val('')
 
