@@ -1,7 +1,9 @@
 (function() {
-  var card_czar, draw_black, draw_white, pick_white, pick_winner;
+  var card_czar, draw_black, draw_white, name, pick_white, pick_winner;
 
   card_czar = null;
+
+  name = null;
 
   pick_winner = function(id) {
     return $('.name').show();
@@ -68,9 +70,9 @@
       var card, div, i;
       div = $('<div/>', {
         "class": 'submitted_cards',
-        id: 'name_' + data['id'],
+        id: 'name_' + data.id,
         click: function() {
-          return pick_winner(data['id']);
+          return pick_winner(data.id);
         }
       });
       div.append($('<div/>', {
@@ -78,9 +80,9 @@
         html: 'TEST'
       }));
       console.log(data);
-      for (i in data['cards']) {
+      for (i in data.cards) {
         console.log(i);
-        card = data['cards'][i];
+        card = data.cards[i];
         div.append($('<img/>', {
           num: card,
           id: 'white_' + card,
@@ -91,21 +93,26 @@
       return $('#judge').append(div);
     });
     socket.on('user names', function(data) {
-      var id, isCzar, _results;
+      var id, isCzar, row, _results;
+      console.log(data);
       $('#users').html('');
       _results = [];
       for (id in data) {
-        if (data[id]['id'] === card_czar) {
-          isCzar = 'yes';
-        } else {
-          isCzar = 'no';
-        }
-        _results.push($('<div/>', {
+        row = $('<tr/>', {
+          "class": 'user_info',
+          id: 'user_info_' + data[id].id,
+          socket: data[id].id
+        }).appendTo('#users');
+        isCzar = data[id].id === card_czar ? 'yes' : 'no';
+        row.append($('<td/>', {
           "class": 'user',
           czar: isCzar,
-          socket: data[id]['id'],
-          html: data[id]['name']
-        }).appendTo('#users'));
+          html: data[id].name
+        }));
+        _results.push(row.append($('<td/>', {
+          "class": 'score',
+          html: data[id].score
+        })));
       }
       return _results;
     });
@@ -132,6 +139,13 @@
         return $('input[name=nextCzar]').hide();
       }
     });
+    socket.on('receve message', function(data) {
+      return $('<p/>', {
+        html: data.message,
+        user: data.id,
+        "class": 'message'
+      }).appendTo('#messages');
+    });
     $('#submit_button').click(function() {
       var cards;
       $('#submit_button').hide();
@@ -142,11 +156,17 @@
       });
       return socket.emit('submit white cards', cards);
     });
+    $('input[name=nameText]').keyup(function(event) {
+      if (event.keyCode === 13) return $('input[name=setName]').click();
+    });
     $('input[name=setName]').click(function() {
-      var name;
       name = $('input[name=nameText]').val();
-      if (name === '') name = 'anon';
-      return socket.emit('set name', name);
+      if (name.length <= 14) {
+        if (name === '') name = 'anon';
+        return socket.emit('set name', name);
+      } else {
+        return alert("Names must be under 14 charecters");
+      }
     });
     $('input[name=drawBlackCard]').click(function() {
       return socket.emit('draw black card');
@@ -154,8 +174,24 @@
     $('input[name=drawWhiteCard]').click(function() {
       return socket.emit('draw white cards');
     });
-    return $('input[name=nextCzar]').click(function() {
+    $('input[name=nextCzar]').click(function() {
       return socket.emit('next czar');
+    });
+    $('#chat_message').keyup(function() {
+      if (event.keyCode === 13) return $('#send_chat').click();
+    });
+    return $('#send_chat').click(function() {
+      var message;
+      if ($('#chat_message').val() !== '') {
+        message = '<strong> ' + name + ':</strong> ' + $('#chat_message').val();
+        $('<p/>', {
+          html: message,
+          user: 'you',
+          "class": 'message'
+        }).appendTo('#messages');
+        socket.emit('send message', message);
+        return $('#chat_message').val('');
+      }
     });
   });
 

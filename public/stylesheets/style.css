@@ -18,38 +18,62 @@ a {
 
 #chat {
   float: right;
-  width:500px;
-  max-width:500px;
+  width:525px;
+  max-width:525px;
 	height: 180px;
 	max-height: 180px;
-}
-
-#send {
-  position: relative;
-  top: -180px;
-  left: 100px;
-}
-
-#messages {
-  position: relative;
-  top: 0px;
-  left: 100px;
-	border: 4px dashed grey;
-  width: 390px;
-  max-width: 390px;
-	height:180px;
 }
 
 #users {
   position: relative;
   left: 0px;
-  top: -184px;
-	height: 180px;
-	max-width: 100px;
-	width: 100px;
+  top: -190px;
+	max-width: 125px;
+	width: 125px;
 	overflow-x: hidden;
 	overflow-y: auto;
 	color: white;
+}
+
+.user {
+  width: 100px;
+  max-width: 100px;
+}
+
+.user[czar=yes] {
+	color: red;
+}
+
+
+#send {
+  position: relative;
+  top: -3px;
+  left: 125px;
+}
+
+#messages {
+  position: relative;
+  top: 0px;
+  left: 125px;
+  width: 390px;
+  max-width: 390px;
+	height:160px;
+	border: 4px dashed grey;
+  overflow: auto;
+}
+
+.message {
+  color: white;
+  padding: 0px 10px;
+  margin: 0;
+}
+
+.message[user=you] > strong {
+  color: green;
+}
+
+.message[user=system] {
+  color: grey;
 }
 
 #submit_contain {
@@ -94,10 +118,6 @@ a {
   width: 100px;
   text-align: center;
   float:left;
-}
-
-.user[czar=yes] {
-	color: red;
 }
 
 .card {

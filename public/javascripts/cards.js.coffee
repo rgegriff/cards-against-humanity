@@ -1,4 +1,5 @@
 card_czar = null
+name = null
 
 pick_winner = (id) ->
   $('.name').show()
@@ -57,17 +58,17 @@ $(document).ready () ->
   socket.on 'give czar cards', (data) ->
     div = $('<div/>',
       class: 'submitted_cards'
-      id: 'name_' + data['id']
-      click: () -> pick_winner data['id']
+      id: 'name_' + data.id
+      click: () -> pick_winner data.id
     )
     div.append($('<div/>',
       class: 'name'
       html: 'TEST'
     ))
     console.log data
-    for i of data['cards']
+    for i of data.cards
       console.log i
-      card = data['cards'][i]
+      card = data.cards[i]
       div.append($('<img/>',
         num: card
         id: 'white_' + card
@@ -78,18 +79,23 @@ $(document).ready () ->
 
   ## user names
   socket.on 'user names', (data) ->
+    console.log data
     $('#users').html ''
     for id of data
-      if data[id]['id'] == card_czar
-        isCzar = 'yes'
-      else
-        isCzar = 'no'
-      $('<div/>',
+      row = $('<tr/>',
+        class: 'user_info'
+        id: 'user_info_' + data[id].id
+        socket: data[id].id
+      ).appendTo '#users'
+      isCzar = if data[id].id == card_czar then 'yes' else 'no'
+      row.append $('<td/>',
         class: 'user'
         czar: isCzar
-        socket: data[id]['id']
-        html: data[id]['name']
-      ).appendTo '#users'
+        html: data[id].name      )
+      row.append $('<td/>',
+        class: 'score'
+        html: data[id].score
+      )
 
   ## non unique name
   socket.on 'non unique name', (data) ->
@@ -117,6 +123,15 @@ $(document).ready () ->
       $('input[name=drawBlackCard]').hide()
       $('input[name=nextCzar]').hide()
 
+  ## recive message
+  socket.on 'receve message', (data) ->
+    $('<p/>',
+      html: data.message
+      user: data.id
+      class: 'message'
+    ).appendTo('#messages')
+
+
   ## Javascript events ##
   
   $('#submit_button').click () ->
@@ -127,10 +142,17 @@ $(document).ready () ->
       $(this).remove()
     socket.emit 'submit white cards', cards
 
+  $('input[name=nameText]').keyup (event) ->
+    if event.keyCode == 13
+      $('input[name=setName]').click()
+
   $('input[name=setName]').click () ->
     name = $('input[name=nameText]').val()
-    name = 'anon' if name == ''
-    socket.emit 'set name', name
+    if name.length <= 14
+      name = 'anon' if name == ''
+      socket.emit 'set name', name
+    else
+      alert "Names must be under 14 charecters"
 
   $('input[name=drawBlackCard]').click () ->
     socket.emit 'draw black card'
@@ -140,6 +162,22 @@ $(document).ready () ->
 
   $('input[name=nextCzar]').click () ->
     socket.emit 'next czar'
+
+  $('#chat_message').keyup () ->
+    if event.keyCode == 13
+      $('#send_chat').click()
+    
+
+  $('#send_chat').click () ->
+    if $('#chat_message').val() != ''
+      message = '<strong> ' + name + ':</strong> ' + $('#chat_message').val() 
+      $('<p/>',
+        html: message
+        user: 'you'
+        class: 'message'
+      ).appendTo('#messages')
+      socket.emit 'send message', message
+      $('#chat_message').val('')
 
 
 

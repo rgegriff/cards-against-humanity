@@ -38,7 +38,11 @@ getUsers = () ->
   user_names = new Array()
   console.log clients
   for i of clients
-    user_names.push {'name': clients[i]['name'], 'id': i} if clients[i]['name']
+    if clients[i]['name']
+      user_names.push
+        name: clients[i]['name']
+        id: i
+        score: clients[i]['score']
   return user_names
 
 ## Starting express server ##
@@ -59,7 +63,9 @@ app.configure () ->
   app.use express.static(__dirname + '/public')
 
 app.configure 'development', () ->
-  app.use express.errorHandler({ dumpExceptions: true, showStack: true })
+  app.use express.errorHandler
+    dumpExceptions: true
+    showStack: true
 
 
 app.configure 'production', () ->
@@ -94,6 +100,7 @@ io.sockets.on 'connection', (socket) ->
         user_names.push 
           name: clients[i]['name']
           id: i
+          score: clients[i]['score']
     if unique
       clients[socket.id]['name'] = data
       user_names.push 
@@ -104,7 +111,10 @@ io.sockets.on 'connection', (socket) ->
       socket.emit 'start', cur_black_card
       io.sockets.emit 'set czar', card_czar
       io.sockets.emit 'user names', user_names
-      console.log('Client ' + socket.id + ' set name to ' + data + ' and joined the game.')
+      console.log 'Client ' + socket.id + ' set name to ' + data + ' and joined the game.'
+      io.sockets.emit 'receve message',
+        message: data + ' joined the game'
+        id: 'system'
     else
       socket.emit 'non unique name', data
 
@@ -116,19 +126,35 @@ io.sockets.on 'connection', (socket) ->
       cards.push drawWhiteCard()
     socket.emit 'send white cards', cards
 
+  ## draw black card
   socket.on 'draw black card', () ->
     cur_black_card = drawBlackCard()
     io.sockets.emit 'send black card', cur_black_card
 
+  ## submit white cards
   socket.on 'submit white cards', (data) ->
-    clients[card_czar]['socket'].emit 'give czar cards', {'id': socket.id, 'name': clients[socket.id]['name'], 'cards': data}
+    clients[card_czar].socket.emit 'give czar cards',
+      id: socket.id
+      name: clients[socket.id].name
+      cards: data
 
+  ## send message
+  socket.on 'send message', (data) ->
+    socket.broadcast.emit 'receve message',
+      message: data
+      id: socket.id
+
+  ## next czar
   socket.on 'next czar', () ->
     card_czar = nextCzar()
     io.sockets.emit 'set czar', card_czar
 
+  ## disconnect
   socket.on 'disconnect', (data) ->
-    console.log clients[socket.id]['name'] + ' had disconnected.'
+    console.log clients[socket.id].name + ' has disconnected.'
+    io.sockets.emit 'receve message',
+      message: clients[socket.id].name + ' has left the game'
+      id: 'system'
     if card_czar == socket.id
       card_czar = nextCzar()
       if card_czar == socket.id
