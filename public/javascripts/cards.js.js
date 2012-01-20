@@ -11,8 +11,7 @@
     $('#judge > div').each(function() {
       return $(this).off('click');
     });
-    $('.name').show();
-    return socket.emit('winner', id);
+    return $('.name').show();
   };
 
   draw_black = function(id) {

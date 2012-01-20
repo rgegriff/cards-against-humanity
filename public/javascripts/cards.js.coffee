@@ -6,7 +6,6 @@ pick_winner = (id) ->
   $('#judge > div').each () ->
     $(this).off('click')
   $('.name').show()
-  socket.emit 'winner', id
 
 draw_black = (id) ->
   $('#black').html($('<img/>'
