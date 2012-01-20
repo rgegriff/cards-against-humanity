@@ -36,10 +36,9 @@ nextCzar = () ->
 
 getUsers = () ->
   user_names = new Array()
-  console.log clients
   for i of clients
     if clients[i]['name']
-      user_names.push
+      user_names.push,
         name: clients[i]['name']
         id: i
         score: clients[i]['score']
@@ -147,8 +146,8 @@ io.sockets.on 'connection', (socket) ->
   ## winner
   socket.on 'winner', (data) ->
     console.log 'didnt crash'
-    #clients[data].score++
-    #io.sockets.emit 'user names', getUsers()
+    clients[data].score++
+    io.sockets.emit 'user names', getUsers()
 
   ## send message
   socket.on 'send message', (data) ->
