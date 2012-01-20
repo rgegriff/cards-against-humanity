@@ -166,6 +166,9 @@
       });
       return socket.emit('submit white cards', cards);
     });
+    $('input[name=drawWhiteCard]').click(function() {
+      return socket.emit('draw white cards', 1);
+    });
     $('input[name=nameText]').keyup(function(event) {
       if (event.keyCode === 13) return $('input[name=setName]').click();
     });

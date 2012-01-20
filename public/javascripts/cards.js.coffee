@@ -150,6 +150,9 @@ $(document).ready () ->
       $(this).remove()
     socket.emit 'submit white cards', cards
 
+  $('input[name=drawWhiteCard]').click () ->
+    socket.emit 'draw white cards', 1
+
   $('input[name=nameText]').keyup (event) ->
     if event.keyCode == 13
       $('input[name=setName]').click()
