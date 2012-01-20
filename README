@@ -1,11 +1,9 @@
 installation:
 	install node.js
-	then:
-	$ npm install express
-	$ npm install socket.io
+  npm install
 
 running:
-	$ node app.js
+	$ coffee app.coffee
 
 	if connecting remotely make sure the ip 
 	in public/javascript/cards.js matches the ip 

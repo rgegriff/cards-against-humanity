@@ -1,12 +1,19 @@
 (function() {
-  var card_czar, draw_black, draw_white, name, pick_white, pick_winner, receve_message;
+  var card_czar, draw_black, draw_white, name, pick_white, pick_winner, receve_message, socket;
 
   card_czar = null;
 
   name = null;
 
+  socket = null;
+
   pick_winner = function(id) {
-    return $('.name').show();
+    $('#judge > div').each(function() {
+      return $(this).off('click');
+    });
+    console.log(id);
+    $('.name').show();
+    return socket.emit('winner', id);
   };
 
   draw_black = function(id) {
@@ -54,7 +61,6 @@
   };
 
   $(document).ready(function() {
-    var socket;
     socket = io.connect(document.url);
     socket.on('start', function(data) {
       if (data) draw_black(data);
@@ -87,7 +93,7 @@
       });
       div.append($('<div/>', {
         "class": 'name',
-        html: 'TEST'
+        html: data.name
       }));
       console.log(data);
       for (i in data.cards) {
@@ -130,6 +136,9 @@
       return alert('User name ' + data + ' is already in use.');
     });
     socket.on('set czar', function(data) {
+      if (socket.socket.sessionid === card_czar && data !== card_czar) {
+        socket.emit('draw black card');
+      }
       $('.user[socket=' + card_czar + ']').attr('czar', 'no');
       card_czar = data;
       $('.user[socket=' + card_czar + ']').attr('czar', 'yes');
@@ -174,12 +183,6 @@
       } else {
         return alert("Names must be under 14 charecters");
       }
-    });
-    $('input[name=drawBlackCard]').click(function() {
-      return socket.emit('draw black card');
-    });
-    $('input[name=drawWhiteCard]').click(function() {
-      return socket.emit('draw white cards');
     });
     $('input[name=nextCzar]').click(function() {
       return socket.emit('next czar');

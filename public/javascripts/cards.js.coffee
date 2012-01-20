@@ -1,8 +1,13 @@
 card_czar = null
 name = null
+socket = null
 
 pick_winner = (id) ->
+  $('#judge > div').each () ->
+    $(this).off('click')
+  console.log id
   $('.name').show()
+  socket.emit 'winner', id
 
 draw_black = (id) ->
   $('#black').html($('<img/>'
@@ -72,7 +77,7 @@ $(document).ready () ->
     )
     div.append($('<div/>',
       class: 'name'
-      html: 'TEST'
+      html: data.name
     ))
     console.log data
     for i of data.cards
@@ -112,6 +117,8 @@ $(document).ready () ->
 
   ## set czar
   socket.on 'set czar', (data) ->
+    if socket.socket.sessionid == card_czar && data != card_czar
+      socket.emit 'draw black card'
     $('.user[socket=' + card_czar + ']').attr('czar', 'no')
     card_czar = data
     $('.user[socket=' + card_czar  + ']').attr('czar', 'yes')
@@ -159,12 +166,6 @@ $(document).ready () ->
       socket.emit 'set name', name
     else
       alert "Names must be under 14 charecters"
-
-  $('input[name=drawBlackCard]').click () ->
-    socket.emit 'draw black card'
-
-  $('input[name=drawWhiteCard]').click () ->
-    socket.emit 'draw white cards'
 
   $('input[name=nextCzar]').click () ->
     socket.emit 'next czar'
