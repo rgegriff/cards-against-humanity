@@ -38,7 +38,7 @@ getUsers = () ->
   user_names = new Array()
   for i of clients
     if clients[i]['name']
-      user_names.push,
+      user_names.push
         name: clients[i]['name']
         id: i
         score: clients[i]['score']
