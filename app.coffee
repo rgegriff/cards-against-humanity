@@ -155,6 +155,7 @@ io.sockets.on 'connection', (socket) ->
   socket.on 'next czar', () ->
     card_czar = nextCzar()
     cur_black_card = drawBlackCard()
+    io.sockets.emit 'send black card', cur_black_card
     io.sockets.emit 'set czar', card_czar
 
   ## disconnect
@@ -168,6 +169,7 @@ io.sockets.on 'connection', (socket) ->
       if card_czar == socket.id
         card_czar = null
       cur_black_card = drawBlackCard()
+      io.sockets.emit 'send black card', cur_black_card
       io.sockets.emit('set czar', card_czar)
     delete clients[socket.id]
     io.sockets.emit 'user names', getUsers()
