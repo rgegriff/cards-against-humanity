@@ -141,8 +141,8 @@ io.sockets.on 'connection', (socket) ->
 
   ## winner
   socket.on 'winner', (data) ->
-    clients[data].score = clients[data].score + 1
-    io.sockets.emit 'user names', getUsers()
+    #clients[data].score = clients[data].score + 1
+    #io.sockets.emit 'user names', getUsers()
 
 
   ## send message
