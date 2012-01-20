@@ -11,7 +11,6 @@
     $('#judge > div').each(function() {
       return $(this).off('click');
     });
-    console.log(id);
     $('.name').show();
     return socket.emit('winner', id);
   };
@@ -56,8 +55,7 @@
       user: sender,
       "class": 'message'
     }).appendTo('#messages');
-    $('#messages').scrollTop($('#messages').get(0).scrollHeight);
-    return console.log($('#messages').scrollTop());
+    return $('#messages').scrollTop($('#messages').get(0).scrollHeight);
   };
 
   $(document).ready(function() {
@@ -95,9 +93,7 @@
         "class": 'name',
         html: data.name
       }));
-      console.log(data);
       for (i in data.cards) {
-        console.log(i);
         card = data.cards[i];
         div.append($('<img/>', {
           num: card,
@@ -110,19 +106,18 @@
     });
     socket.on('user names', function(data) {
       var id, isCzar, row, _results;
-      console.log(data);
       $('#users').html('');
       _results = [];
       for (id in data) {
         row = $('<tr/>', {
           "class": 'user_info',
-          id: 'user_info_' + data[id].id,
-          socket: data[id].id
+          id: 'user_info_' + data[id].id
         }).appendTo('#users');
         isCzar = data[id].id === card_czar ? 'yes' : 'no';
         row.append($('<td/>', {
           "class": 'user',
           czar: isCzar,
+          socket: data[id].id,
           html: data[id].name
         }));
         _results.push(row.append($('<td/>', {
@@ -136,11 +131,10 @@
       return alert('User name ' + data + ' is already in use.');
     });
     socket.on('set czar', function(data) {
-      if (socket.socket.sessionid === card_czar && data !== card_czar) {
-        socket.emit('draw black card');
-      }
+      console.log(card_czar + $('.user[socket=' + card_czar + ']').attr('czar'));
       $('.user[socket=' + card_czar + ']').attr('czar', 'no');
       card_czar = data;
+      console.log(card_czar + $('.user[socket=' + card_czar + ']').attr('czar'));
       $('.user[socket=' + card_czar + ']').attr('czar', 'yes');
       if (socket.socket.sessionid === card_czar) {
         $('#submit_contain').hide();

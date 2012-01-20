@@ -5,7 +5,6 @@ socket = null
 pick_winner = (id) ->
   $('#judge > div').each () ->
     $(this).off('click')
-  console.log id
   $('.name').show()
   socket.emit 'winner', id
 
@@ -43,7 +42,6 @@ receve_message = (sender, message) ->
     class: 'message'
   ).appendTo('#messages')
   $('#messages').scrollTop($('#messages').get(0).scrollHeight)
-  console.log $('#messages').scrollTop()
 
 $(document).ready () ->
   socket = io.connect(document.url)
@@ -79,9 +77,7 @@ $(document).ready () ->
       class: 'name'
       html: data.name
     ))
-    console.log data
     for i of data.cards
-      console.log i
       card = data.cards[i]
       div.append($('<img/>',
         num: card
@@ -93,18 +89,17 @@ $(document).ready () ->
 
   ## user names
   socket.on 'user names', (data) ->
-    console.log data
     $('#users').html ''
     for id of data
       row = $('<tr/>',
         class: 'user_info'
         id: 'user_info_' + data[id].id
-        socket: data[id].id
       ).appendTo '#users'
       isCzar = if data[id].id == card_czar then 'yes' else 'no'
       row.append $('<td/>',
         class: 'user'
         czar: isCzar
+        socket: data[id].id
         html: data[id].name      )
       row.append $('<td/>',
         class: 'score'
@@ -117,10 +112,10 @@ $(document).ready () ->
 
   ## set czar
   socket.on 'set czar', (data) ->
-    if socket.socket.sessionid == card_czar && data != card_czar
-      socket.emit 'draw black card'
+    console.log card_czar + $('.user[socket=' + card_czar + ']').attr('czar')
     $('.user[socket=' + card_czar + ']').attr('czar', 'no')
     card_czar = data
+    console.log card_czar + $('.user[socket=' + card_czar + ']').attr('czar')
     $('.user[socket=' + card_czar  + ']').attr('czar', 'yes')
     if socket.socket.sessionid == card_czar
       $('#submit_contain').hide()
