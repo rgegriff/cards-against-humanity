@@ -144,6 +144,11 @@ io.sockets.on 'connection', (socket) ->
       name: clients[socket.id].name
       cards: data
 
+  ## winner
+  socket.on 'winner', (data) ->
+    clients[data].score++
+    io.sockets.emit 'user names', getUsers()
+
   ## send message
   socket.on 'send message', (data) ->
     socket.broadcast.emit 'receve message',

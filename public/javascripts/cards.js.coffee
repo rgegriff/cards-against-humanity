@@ -1,11 +1,7 @@
 card_czar = null
 name = null
-socket = null
 
 pick_winner = (id) ->
-  $('#judge > div').each () ->
-    $(this).off('click')
-  $('.name').show()
 
 draw_black = (id) ->
   $('#black').html($('<img/>'
@@ -70,7 +66,12 @@ $(document).ready () ->
     div = $('<div/>',
       class: 'submitted_cards'
       id: 'name_' + data.id
-      click: () -> pick_winner data.id
+      click: () ->
+        console.log data
+        $('#judge > div').each () ->
+          $(this).off('click')
+        $('.name').show()
+        socket.emit 'winner', data.id
     )
     div.append($('<div/>',
       class: 'name'

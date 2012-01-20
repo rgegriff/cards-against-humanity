@@ -1,18 +1,11 @@
 (function() {
-  var card_czar, draw_black, draw_white, name, pick_white, pick_winner, receve_message, socket;
+  var card_czar, draw_black, draw_white, name, pick_white, pick_winner, receve_message;
 
   card_czar = null;
 
   name = null;
 
-  socket = null;
-
-  pick_winner = function(id) {
-    $('#judge > div').each(function() {
-      return $(this).off('click');
-    });
-    return $('.name').show();
-  };
+  pick_winner = function(id) {};
 
   draw_black = function(id) {
     return $('#black').html($('<img/>', {
@@ -58,6 +51,7 @@
   };
 
   $(document).ready(function() {
+    var socket;
     socket = io.connect(document.url);
     socket.on('start', function(data) {
       if (data) draw_black(data);
@@ -85,7 +79,12 @@
         "class": 'submitted_cards',
         id: 'name_' + data.id,
         click: function() {
-          return pick_winner(data.id);
+          console.log(data);
+          $('#judge > div').each(function() {
+            return $(this).off('click');
+          });
+          $('.name').show();
+          return socket.emit('winner', data.id);
         }
       });
       div.append($('<div/>', {
