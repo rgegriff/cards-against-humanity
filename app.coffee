@@ -51,7 +51,6 @@ express = require 'express'
 routes = require './routes'
 
 app = module.exports = express.createServer()
-io = require('socket.io').listen(app)
 
 
 app.configure () ->
@@ -67,7 +66,13 @@ app.configure 'development', () ->
     dumpExceptions: true
     showStack: true
 
+io = require('socket.io').listen(app)
 
+# heroku configs
+io.configure () ->
+  io.set 'transports', ['xhr-polling']
+  io.set 'polling duration', 10
+  
 app.configure 'production', () ->
   app.use express.errorHandler()
 
