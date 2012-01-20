@@ -1,8 +1,0 @@
-#!/bin/bash
-echo Compiling coffescripts
-for i in ./public/javascripts/*.coffee
-do
-  echo -e "\t$i"
-  coffee -c $i
-done
-coffee app.coffee

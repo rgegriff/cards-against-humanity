@@ -1,1 +1,1 @@
-web: ./init
+web: coffee app.coffee 
