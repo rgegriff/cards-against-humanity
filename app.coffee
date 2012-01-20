@@ -164,10 +164,11 @@ io.sockets.on 'connection', (socket) ->
 
   ## disconnect
   socket.on 'disconnect', (data) ->
-    console.log clients[socket.id].name + ' has disconnected.'
-    io.sockets.emit 'receve message',
-      message: clients[socket.id].name + ' has left the game'
-      id: 'system'
+    if clients[socket.id].name
+      console.log clients[socket.id].name + ' has disconnected.'
+      io.sockets.emit 'receve message',
+        message: clients[socket.id].name + ' has left the game'
+        id: 'system'
     if card_czar == socket.id
       card_czar = nextCzar()
       if card_czar == socket.id
