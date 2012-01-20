@@ -146,7 +146,8 @@ io.sockets.on 'connection', (socket) ->
   ## winner
   socket.on 'winner', (data) ->
     console.log 'didnt crash'
-    clients[data].score++
+    if clients[data]
+      clients[data].score++
     io.sockets.emit 'user names', getUsers()
 
   ## send message
